@@ -1,0 +1,43 @@
+{
+  "navigation": {
+    "home": "Inicio",
+    "technology": "Tecnología",
+    "politics": "Política",
+    "sports": "Deportes",
+    "business": "Negocios",
+    "health": "Salud",
+    "search": "Buscar",
+    "menu": "Menú"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Algo salió mal",
+    "retry": "Intentar de nuevo",
+    "readMore": "Leer más",
+    "share": "Compartir",
+    "copy": "Copiar",
+    "copied": "¡Copiado!",
+    "advertisement": "Publicidad",
+    "sponsored": "Patrocinado"
+  },
+  "hero": {
+    "title": "Noticias de Última Hora",
+    "subtitle": "Mantente informado con las últimas historias que más importan"
+  },
+  "sidebar": {
+    "weather": "Clima",
+    "time": "Hora en Vivo",
+    "visitors": "Visitantes",
+    "trending": "Temas Tendencia",
+    "popular": "Artículos Populares"
+  },
+  "footer": {
+    "company": "Empresa",
+    "categories": "Categorías",
+    "legal": "Legal",
+    "newsletter": "Mantente Actualizado",
+    "newsletterText": "Suscríbete a nuestro boletín para las últimas noticias y actualizaciones.",
+    "subscribe": "Suscribirse",
+    "copyright": "© 2024 NewsHub. Todos los derechos reservados."
+  }
+}

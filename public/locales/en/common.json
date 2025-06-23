@@ -1,0 +1,43 @@
+{
+  "navigation": {
+    "home": "Home",
+    "technology": "Technology",
+    "politics": "Politics",
+    "sports": "Sports",
+    "business": "Business",
+    "health": "Health",
+    "search": "Search",
+    "menu": "Menu"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "retry": "Try again",
+    "readMore": "Read more",
+    "share": "Share",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "advertisement": "Advertisement",
+    "sponsored": "Sponsored"
+  },
+  "hero": {
+    "title": "Breaking News",
+    "subtitle": "Stay informed with the latest stories that matter most"
+  },
+  "sidebar": {
+    "weather": "Weather",
+    "time": "Live Time",
+    "visitors": "Visitors",
+    "trending": "Trending Topics",
+    "popular": "Popular Articles"
+  },
+  "footer": {
+    "company": "Company",
+    "categories": "Categories",
+    "legal": "Legal",
+    "newsletter": "Stay Updated",
+    "newsletterText": "Subscribe to our newsletter for the latest news and updates.",
+    "subscribe": "Subscribe",
+    "copyright": "© 2024 NewsHub. All rights reserved."
+  }
+}
