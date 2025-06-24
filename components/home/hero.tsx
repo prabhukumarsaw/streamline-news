@@ -10,6 +10,7 @@ import { Separator } from '@/components/ui/separator';
 import { getTrendingNews } from '@/services/news-service';
 import { formatRelativeTime } from '@/lib/utils';
 import { newsData } from '@/data/news-data';
+import { HeroCarousel } from './hero-carousel';
 
 export function Hero() {
   const { data: trendingNews = [] } = useQuery({
@@ -17,84 +18,30 @@ export function Hero() {
     queryFn: getTrendingNews,
   });
 
-  const featuredArticle = trendingNews[0];
-  const sideArticles = trendingNews.slice(1, 4);
-
-  if (!featuredArticle) return null;
-
-  const author = newsData.authors.find(a => a.id === featuredArticle.authorId);
-  const category = newsData.categories.find(c => c.id === featuredArticle.categoryId);
+  // Use API data if available, otherwise fallback to mock data
+  const articles = trendingNews.length > 0 ? trendingNews : newsData.articles.slice(0, 4);
+  const sideArticles = articles.slice(1, 4);
 
   return (
     <section className="mb-12">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Featured Article */}
+        {/* Featured Carousel */}
         <div className="lg:col-span-2">
-          <Card className="overflow-hidden group hover:shadow-lg transition-shadow">
-            <div className="relative aspect-video">
-              <Image
-                src={featuredArticle.image}
-                alt={featuredArticle.title}
-                fill
-                className="object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-              {featuredArticle.trending && (
-                <Badge className="absolute top-4 left-4 bg-red-500 hover:bg-red-600">
-                  Breaking
-                </Badge>
-              )}
-            </div>
-            <CardContent className="p-6">
-              <div className="flex items-center gap-2 mb-3">
-                <Badge variant="secondary">{category?.name}</Badge>
-                <Separator orientation="vertical" className="h-4" />
-                <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                  <Clock className="h-3 w-3" />
-                  {formatRelativeTime(featuredArticle.publishedAt)}
-                </div>
-              </div>
-              
-              <Link href={`/news/${featuredArticle.slug}`}>
-                <h2 className="text-2xl font-bold leading-tight mb-3 group-hover:text-primary transition-colors">
-                  {featuredArticle.title}
-                </h2>
-              </Link>
-              
-              <p className="text-muted-foreground mb-4 line-clamp-3">
-                {featuredArticle.excerpt}
-              </p>
-              
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Image
-                    src={author?.avatar || ''}
-                    alt={author?.name || ''}
-                    width={32}
-                    height={32}
-                    className="rounded-full"
-                  />
-                  <div>
-                    <p className="text-sm font-medium">{author?.name}</p>
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <Eye className="h-3 w-3" />
-                      {featuredArticle.views.toLocaleString()} views
-                    </div>
-                  </div>
-                </div>
-                <Badge variant="outline">{featuredArticle.readTime} min read</Badge>
-              </div>
-            </CardContent>
-          </Card>
+          <HeroCarousel />
         </div>
 
         {/* Side Articles */}
         <div className="space-y-4">
+          <h2 className="text-xl font-bold mb-4 border-l-4 border-primary pl-3">
+            Latest Updates
+          </h2>
+          
           {sideArticles.map((article) => {
             const articleAuthor = newsData.authors.find(a => a.id === article.authorId);
             const articleCategory = newsData.categories.find(c => c.id === article.categoryId);
             
             return (
-              <Card key={article.id} className="overflow-hidden group hover:shadow-md transition-shadow">
+              <Card key={article.id} className="overflow-hidden group hover:shadow-md transition-all duration-300">
                 <div className="flex">
                   <div className="relative w-24 h-24 flex-shrink-0">
                     <Image
@@ -109,6 +56,9 @@ export function Hero() {
                       <Badge variant="secondary" className="text-xs">
                         {articleCategory?.name}
                       </Badge>
+                      {article.trending && (
+                        <Badge className="text-xs bg-red-500">Live</Badge>
+                      )}
                     </div>
                     <Link href={`/news/${article.slug}`}>
                       <h3 className="font-medium text-sm leading-tight mb-2 group-hover:text-primary transition-colors line-clamp-2">
@@ -125,6 +75,13 @@ export function Hero() {
               </Card>
             );
           })}
+          
+          {/* View All Button */}
+          <Link href="/latest">
+            <Card className="p-4 text-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer">
+              <p className="text-primary font-medium">View All Latest News →</p>
+            </Card>
+          </Link>
         </div>
       </div>
     </section>
