@@ -1,5 +1,5 @@
 import { newsData } from '@/data/news-data';
-import { Article } from '@/types/news';
+import { Article, Category, Author } from '@/types/news';
 
 export async function getAllNewsArticles(): Promise<Article[]> {
   // Simulate API delay

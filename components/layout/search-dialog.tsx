@@ -1,207 +1,208 @@
 'use client';
 
-import * as React from 'react';
+import { useState, useEffect } from 'react';
+import { Search, Clock, TrendingUp, User } from 'lucide-react';
 import {
-  Search,
-  PlaneTakeoff,
-  BarChart2,
-  Video,
-  AudioLines,
-  Globe,
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Sheet, SheetContent, SheetHeader } from '@/components/ui/sheet';
-import { useDebounce } from '@/hooks/use-debounce';
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+} from '@/components/ui/command';
+import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
+
 interface SearchDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-interface Action {
+interface SearchResult {
   id: string;
-  label: string;
-  icon: React.ReactNode;
+  title: string;
+  type: 'article' | 'category' | 'author';
+  href: string;
   description?: string;
-  short?: string;
-  end?: string;
+  timestamp?: Date;
+  category?: string;
 }
 
-const allActions: Action[] = [
+const mockSearchResults: SearchResult[] = [
   {
     id: '1',
-    label: 'Place Bid',
-    icon: <PlaneTakeoff className="h-4 w-4 text-blue-500" />,
-    description: 'Quick bid',
-    short: '⌘B',
-    end: 'Action',
+    title: 'Climate Change Summit 2024: World Leaders Gather',
+    type: 'article',
+    href: '/articles/climate-summit-2024',
+    description: 'Global leaders convene to discuss urgent climate action',
+    timestamp: new Date(),
+    category: 'World',
   },
   {
     id: '2',
-    label: 'Auction Analytics',
-    icon: <BarChart2 className="h-4 w-4 text-orange-500" />,
-    description: 'View stats',
-    short: '⌘A',
-    end: 'Report',
+    title: 'Technology',
+    type: 'category',
+    href: '/category/technology',
+    description: 'Latest technology news and innovations',
   },
   {
     id: '3',
-    label: 'Live Auctions',
-    icon: <Video className="h-4 w-4 text-purple-500" />,
-    description: 'Join now',
-    short: '⌘L',
-    end: 'Stream',
-  },
-  {
-    id: '4',
-    label: 'Auction Alerts',
-    icon: <AudioLines className="h-4 w-4 text-green-500" />,
-    description: 'Set reminders',
-    short: '⌘R',
-    end: 'Notify',
-  },
-  {
-    id: '5',
-    label: 'Global Auctions',
-    icon: <Globe className="h-4 w-4 text-blue-500" />,
-    description: 'Worldwide',
-    short: '⌘G',
-    end: 'Browse',
+    title: 'Dr. Sarah Johnson',
+    type: 'author',
+    href: '/author/sarah-johnson',
+    description: 'Environmental Science Correspondent',
   },
 ];
 
 export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
-  const [query, setQuery] = React.useState('');
-  const [result, setResult] = React.useState<Action[] | null>(null);
-  const inputRef = React.useRef<HTMLInputElement>(null);
-  const debouncedQuery = useDebounce(query, 200);
+  const [searchValue, setSearchValue] = useState('');
+  const [results, setResults] = useState<SearchResult[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [recentSearches] = useState<string[]>([
+    'Climate change',
+    'AI technology',
+    'Economic policy',
+    'Sports news',
+  ]);
 
-  React.useEffect(() => {
-    if (open) {
-      inputRef.current?.focus();
+  useEffect(() => {
+    if (searchValue.length > 2) {
+      setIsLoading(true);
+      // Simulate API call
+      setTimeout(() => {
+        setResults(
+          mockSearchResults.filter((result) =>
+            result.title.toLowerCase().includes(searchValue.toLowerCase())
+          )
+        );
+        setIsLoading(false);
+      }, 300);
+    } else {
+      setResults([]);
+      setIsLoading(false);
     }
-  }, [open]);
+  }, [searchValue]);
 
-  React.useEffect(() => {
-    if (!debouncedQuery) {
-      setResult(allActions);
-      return;
-    }
-
-    const normalizedQuery = debouncedQuery.toLowerCase().trim();
-    const filteredActions = allActions.filter((action) => {
-      const searchableText = action.label.toLowerCase();
-      return searchableText.includes(normalizedQuery);
-    });
-
-    setResult(filteredActions);
-  }, [debouncedQuery]);
-
-  const container = {
-    hidden: { opacity: 0, height: 0 },
-    show: {
-      opacity: 1,
-      height: 'auto',
-      transition: {
-        height: {
-          duration: 0.4,
-        },
-        staggerChildren: 0.1,
-      },
-    },
-    exit: {
-      opacity: 0,
-      height: 0,
-      transition: {
-        height: {
-          duration: 0.3,
-        },
-        opacity: {
-          duration: 0.2,
-        },
-      },
-    },
-  };
-
-  const item = {
-    hidden: { opacity: 0, y: 20 },
-    show: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.3,
-      },
-    },
-    exit: {
-      opacity: 0,
-      y: -10,
-      transition: {
-        duration: 0.2,
-      },
-    },
+  const handleSelect = (href: string) => {
+    window.location.href = href;
+    onOpenChange(false);
   };
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent
-        side="center"
-        className="min-h-[300px] w-[500px] pt-9 sm:w-[540px] border-0 bg-background/95 backdrop-blur-sm"
-      >
-        <SheetHeader className="border-b pb-4">
-          <div className="flex items-center gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                ref={inputRef}
-                placeholder="Search auctions..."
-                className="pl-8"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-              />
-            </div>
-          </div>
-        </SheetHeader>
-        <div className="grid gap-6 px-1 py-2">
-          <div>
-            {result && (
-              <div
-                className="w-full overflow-hidden"
-               
-              >
-                <ul>
-                  {result.map((action) => (
-                    <li
-                      key={action.id}
-                      className="px-3 py-2 flex items-center justify-between hover:bg-gray-200 dark:hover:bg-zinc-900 cursor-pointer rounded-md"
-                     
-                    >
-                      <div className="flex items-center gap-2 justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="text-gray-500">{action.icon}</span>
-                          <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                            {action.label}
-                          </span>
-                          <span className="text-xs text-gray-400">
-                            {action.description}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-400">
-                          {action.short}
-                        </span>
-                        <span className="text-xs text-gray-400 text-right">
-                          {action.end}
-                        </span>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl p-0">
+        <DialogHeader className="px-6 pt-6 pb-0">
+          <DialogTitle>Search</DialogTitle>
+        </DialogHeader>
+        <Command className="rounded-lg border-0 shadow-none">
+          <CommandInput
+            placeholder="Search articles, topics, authors..."
+            value={searchValue}
+            onValueChange={setSearchValue}
+            className="border-0 focus:ring-0"
+          />
+          <CommandList className="max-h-96">
+            {isLoading && (
+              <div className="p-6 space-y-3">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-4 w-1/2" />
               </div>
             )}
-          </div>
-        </div>
-      </SheetContent>
-    </Sheet>
+
+            {!isLoading && searchValue.length <= 2 && (
+              <CommandGroup heading="Recent Searches">
+                {recentSearches.map((search, index) => (
+                  <CommandItem
+                    key={index}
+                    onSelect={() => {
+                      setSearchValue(search);
+                    }}
+                    className="flex items-center space-x-2"
+                  >
+                    <Clock className="h-4 w-4 text-muted-foreground" />
+                    <span>{search}</span>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            )}
+
+            {!isLoading && results.length > 0 && (
+              <>
+                <CommandGroup heading="Search Results">
+                  {results.map((result) => (
+                    <CommandItem
+                      key={result.id}
+                      onSelect={() => handleSelect(result.href)}
+                      className="flex items-start space-x-3 p-4"
+                    >
+                      <div className="flex-shrink-0 mt-1">
+                        {result.type === 'article' && (
+                          <Search className="h-4 w-4 text-blue-500" />
+                        )}
+                        {result.type === 'category' && (
+                          <TrendingUp className="h-4 w-4 text-green-500" />
+                        )}
+                        {result.type === 'author' && (
+                          <User className="h-4 w-4 text-purple-500" />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center space-x-2">
+                          <div className="font-medium text-sm truncate">
+                            {result.title}
+                          </div>
+                          <Badge
+                            variant="outline"
+                            className="text-xs capitalize"
+                          >
+                            {result.type}
+                          </Badge>
+                          {result.category && (
+                            <Badge variant="secondary" className="text-xs">
+                              {result.category}
+                            </Badge>
+                          )}
+                        </div>
+                        {result.description && (
+                          <div className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                            {result.description}
+                          </div>
+                        )}
+                        {result.timestamp && (
+                          <div className="text-xs text-muted-foreground mt-1">
+                            {result.timestamp.toLocaleDateString()}
+                          </div>
+                        )}
+                      </div>
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+                <CommandSeparator />
+              </>
+            )}
+
+            {!isLoading && searchValue.length > 2 && results.length === 0 && (
+              <CommandEmpty>
+                <div className="text-center py-6">
+                  <Search className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+                  <div className="text-sm font-medium">No results found</div>
+                  <div className="text-xs text-muted-foreground">
+                    Try searching for something else
+                  </div>
+                </div>
+              </CommandEmpty>
+            )}
+          </CommandList>
+        </Command>
+      </DialogContent>
+    </Dialog>
   );
 }
