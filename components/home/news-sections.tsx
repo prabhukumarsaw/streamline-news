@@ -14,10 +14,15 @@ interface NewsSectionProps {
   showViewAll?: boolean;
 }
 
-function NewsSection({ title, categoryId, showViewAll = true }: NewsSectionProps) {
+function NewsSection({
+  title,
+  categoryId,
+  showViewAll = true,
+}: NewsSectionProps) {
   const { data: articles = [], isLoading } = useQuery({
     queryKey: ['news-section', categoryId || 'latest'],
-    queryFn: () => categoryId ? getNewsByCategory(categoryId) : getLatestNews(),
+    queryFn: () =>
+      categoryId ? getNewsByCategory(categoryId) : getLatestNews(),
   });
 
   if (isLoading) {
@@ -42,7 +47,7 @@ function NewsSection({ title, categoryId, showViewAll = true }: NewsSectionProps
           </Button>
         )}
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {displayArticles.map((article) => (
           <NewsCard key={article.id} article={article} />

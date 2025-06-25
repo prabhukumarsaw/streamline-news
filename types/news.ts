@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export interface Article {
   id: string;
   title: string;
@@ -15,11 +17,6 @@ export interface Article {
   views: number;
 }
 
-export interface Category {
-  id: string;
-  name: string;
-  slug: string;
-}
 
 export interface Author {
   id: string;
@@ -47,4 +44,47 @@ export interface NewsletterSubscription {
   email: string;
   subscribedAt: string;
   categories: string[];
+}
+
+export interface Category {
+  id: number
+  category: string 
+  cat_in_english: string
+  serial: number
+  created_date: string
+  renderer_code: string
+}
+
+export interface CategoryResponse {
+  status: boolean
+  data: Category[]
+}
+
+export interface NavItem {
+  name: string
+  href: string
+  icon?: React.ReactNode
+  description?: string
+  badge?: string
+  items?: SubNavItem[]
+  featured?: {
+    title: string
+    description: string
+    href: string
+  }
+}
+
+export interface SubNavItem {
+  name: string
+  href: string
+  description: string
+  badge?: string
+}
+
+export interface BreakingNewsItem {
+  id: number
+  title: string
+  href: string
+  time: Date
+  isUrgent?: boolean
 }

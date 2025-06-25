@@ -11,6 +11,7 @@ import { getTrendingNews } from '@/services/news-service';
 import { formatRelativeTime } from '@/lib/utils';
 import { newsData } from '@/data/news-data';
 import { HeroCarousel } from './hero-carousel';
+import { FeatureMain } from './feature-main';
 
 export function Hero() {
   const { data: trendingNews = [] } = useQuery({
@@ -19,29 +20,34 @@ export function Hero() {
   });
 
   // Use API data if available, otherwise fallback to mock data
-  const articles = trendingNews.length > 0 ? trendingNews : newsData.articles.slice(0, 4);
+  const articles =
+    trendingNews.length > 0 ? trendingNews : newsData.articles.slice(0, 4);
   const sideArticles = articles.slice(1, 4);
 
-  return (
-    <section className="mb-12">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Featured Carousel */}
-        <div className="lg:col-span-2">
-          <HeroCarousel />
-        </div>
+  // console.log('Trending News:', trendingNews);
 
+  return (
+    <section className="h-screen">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Side Articles */}
         <div className="space-y-4">
           <h2 className="text-xl font-bold mb-4 border-l-4 border-primary pl-3">
             Latest Updates
           </h2>
-          
+
           {sideArticles.map((article) => {
-            const articleAuthor = newsData.authors.find(a => a.id === article.authorId);
-            const articleCategory = newsData.categories.find(c => c.id === article.categoryId);
-            
+            const articleAuthor = newsData.authors.find(
+              (a) => a.id === article.authorId
+            );
+            const articleCategory = newsData.categories.find(
+              (c) => c.id === article.categoryId
+            );
+
             return (
-              <Card key={article.id} className="overflow-hidden group hover:shadow-md transition-all duration-300">
+              <Card
+                key={article.id}
+                className="overflow-hidden group hover:shadow-md transition-all duration-300"
+              >
                 <div className="flex">
                   <div className="relative w-24 h-24 flex-shrink-0">
                     <Image
@@ -75,13 +81,18 @@ export function Hero() {
               </Card>
             );
           })}
-          
+
           {/* View All Button */}
           <Link href="/latest">
             <Card className="p-4 text-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer">
               <p className="text-primary font-medium">View All Latest News →</p>
             </Card>
           </Link>
+        </div>
+
+        {/* Featured Carousel */}
+        <div className="lg:col-span-2 space-y-4">
+          <HeroCarousel />
         </div>
       </div>
     </section>

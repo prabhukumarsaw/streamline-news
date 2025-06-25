@@ -78,6 +78,7 @@ class NewsService {
       const response = await apiClient.post('/crud/story/v1/show', {
         slug: slug,
       });
+      console.log('Article response:', response);
 
       if (response.status && response.data) {
         return this.transformArticle(response.data);
@@ -134,23 +135,27 @@ class NewsService {
     }
   }
 
-  /**
-   * Get categories
-   */
-  async getCategories(): Promise<Category[]> {
-    try {
-      const response = await apiClient.post('/crud/category/v1/show');
+/**
+ * Get categories
+ */
+async getCategories(): Promise<Category[]> {
+  try {
+    const response = await apiClient.post('/crud/category/v1/show');
 
-      if (response.status && response.data) {
-        return response.data.map(this.transformCategory);
-      }
+     console.log('🛠 API raw response:', response.data);
 
-      return [];
-    } catch (error) {
-      console.error('Failed to fetch categories:', error);
-      return [];
+
+    if (response && Array.isArray(response.data)) {
+      return response.data.map((item: any) => this.transformCategory(item));
     }
+
+   return [];
+  } catch (error) {
+    console.error('Failed to fetch categories:', error);
+    return [];
   }
+}
+
 
   /**
    * Get articles by category
@@ -219,16 +224,19 @@ class NewsService {
     };
   }
 
-  /**
-   * Transform backend category data to frontend format
-   */
-  private transformCategory(backendCategory: any): Category {
-    return {
-      id: backendCategory.id?.toString() || Math.random().toString(),
-      name: backendCategory.name || backendCategory.title || 'Uncategorized',
-      slug: backendCategory.slug || this.generateSlug(backendCategory.name || backendCategory.title),
-    };
-  }
+/**
+ * Transform backend category data to frontend format
+ */
+private transformCategory(backendCategory: any): Category {
+  return {
+    id: Number(backendCategory.id) || 0,
+    category: backendCategory.category || 'Uncategorized',
+    cat_in_english: backendCategory.cat_in_english || backendCategory.category || 'Uncategorized',
+    serial: Number(backendCategory.serial) || 0,
+    created_date: backendCategory.created_date || '',
+    renderer_code: backendCategory.renderer_code || '',
+  };
+}
 
   /**
    * Generate slug from title
@@ -293,6 +301,7 @@ export const getTrendingNews = () => newsService.getTrendingArticles();
 export const getLatestNews = (page?: number, limit?: number, category?: string) => 
   newsService.getArticles({ page, limit, category });
 export const getNewsByCategory = (categoryId: string) => newsService.getNewsByCategory(categoryId);
+export const getCategories = newsService.getCategories.bind(newsService);
 export const getRelatedNews = (categoryId: string, currentSlug: string) => 
   newsService.getRelatedNews(categoryId, currentSlug);
 export const searchNews = (query: string) => newsService.searchArticles(query);

@@ -63,11 +63,13 @@ class ApiClient {
 
   async get<T = any>(url: string, config?: AxiosRequestConfig): Promise<T> {
     const response = await this.client.get(url, config);
+    console.log('GET Response:', response);
     return response.data;
   }
 
   async post<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
     const response = await this.client.post(url, data, config);
+    console.log('POST Response:', response);
     return response.data;
   }
 
