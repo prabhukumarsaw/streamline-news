@@ -1,86 +1,58 @@
 /**
- * API Client Configuration
+ * Enhanced API Client
  * Created by: Prabhu
- * Description: Centralized API client with authentication and error handling
+ * Description: Production-ready API client with comprehensive error handling
  */
 
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { getApiHeaders, getMultipartHeaders } from './api-config';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://live.framework-futuristic.com/api';
 
-/**
- * API Client class for handling all HTTP requests
- */
 class ApiClient {
   private client: AxiosInstance;
 
   constructor() {
     this.client = axios.create({
       baseURL: API_BASE_URL,
-      timeout: 30000,
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
+      timeout: 60000,
     });
 
     this.setupInterceptors();
   }
 
-  /**
-   * Setup request and response interceptors
-   */
   private setupInterceptors() {
-    // Request interceptor to add auth token
+    // Request interceptor
     this.client.interceptors.request.use(
       (config) => {
         const token = this.getStoredToken();
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
+          config.headers['API-KEY'] = 'eff41ef6-d430-4887-aa55-9fcf46c72c99';
         }
+        config.headers.Accept = 'application/json';
+        
+        if (!config.headers['Content-Type']) {
+          config.headers['Content-Type'] = 'application/json';
+        }
+        
         return config;
       },
-      (error) => {
-        return Promise.reject(error);
-      }
+      (error) => Promise.reject(error)
     );
 
-    // Response interceptor for error handling
+    // Response interceptor
     this.client.interceptors.response.use(
-      (response: AxiosResponse) => {
-        return response;
-      },
+      (response: AxiosResponse) => response,
       async (error) => {
         const originalRequest = error.config;
 
-        // Handle 401 errors (unauthorized)
         if (error.response?.status === 401 && !originalRequest._retry) {
           originalRequest._retry = true;
+          this.clearTokens();
           
-          // Try to refresh token
-          const refreshToken = this.getStoredRefreshToken();
-          if (refreshToken) {
-            try {
-              const response = await this.refreshToken(refreshToken);
-              const newToken = response.data.token;
-              this.setStoredToken(newToken);
-              
-              // Retry original request with new token
-              originalRequest.headers.Authorization = `Bearer ${newToken}`;
-              return this.client(originalRequest);
-            } catch (refreshError) {
-              // Refresh failed, redirect to login
-              this.clearTokens();
-              if (typeof window !== 'undefined') {
-                window.location.href = '/auth/login';
-              }
-            }
-          } else {
-            // No refresh token, redirect to login
-            this.clearTokens();
-            if (typeof window !== 'undefined') {
-              window.location.href = '/auth/login';
-            }
+          if (typeof window !== 'undefined') {
+            window.location.href = '/auth/login';
           }
         }
 
@@ -89,45 +61,27 @@ class ApiClient {
     );
   }
 
-  /**
-   * GET request
-   */
   async get<T = any>(url: string, config?: AxiosRequestConfig): Promise<T> {
     const response = await this.client.get(url, config);
     return response.data;
   }
 
-  /**
-   * POST request
-   */
   async post<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
     const response = await this.client.post(url, data, config);
     return response.data;
   }
 
-  /**
-   * PUT request
-   */
   async put<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
     const response = await this.client.put(url, data, config);
     return response.data;
   }
 
-  /**
-   * DELETE request
-   */
   async delete<T = any>(url: string, config?: AxiosRequestConfig): Promise<T> {
     const response = await this.client.delete(url, config);
     return response.data;
   }
 
-  /**
-   * Upload file
-   */
-  async upload<T = any>(url: string, file: File, onProgress?: (progress: number) => void): Promise<T> {
-    const formData = new FormData();
-    formData.append('file', file);
-
+  async upload<T = any>(url: string, formData: FormData, onProgress?: (progress: number) => void): Promise<T> {
     const config: AxiosRequestConfig = {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -144,48 +98,17 @@ class ApiClient {
     return response.data;
   }
 
-  /**
-   * Refresh authentication token
-   */
-  private async refreshToken(refreshToken: string) {
-    return this.client.post('/auth/refresh', { refresh_token: refreshToken });
-  }
-
-  /**
-   * Get stored authentication token
-   */
   private getStoredToken(): string | null {
     if (typeof window === 'undefined') return null;
-    return localStorage.getItem('auth_token');
+    return localStorage.getItem('token');
   }
 
-  /**
-   * Get stored refresh token
-   */
-  private getStoredRefreshToken(): string | null {
-    if (typeof window === 'undefined') return null;
-    return localStorage.getItem('refresh_token');
-  }
-
-  /**
-   * Set stored authentication token
-   */
-  private setStoredToken(token: string): void {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('auth_token', token);
-    }
-  }
-
-  /**
-   * Clear stored tokens
-   */
   private clearTokens(): void {
     if (typeof window !== 'undefined') {
-      localStorage.removeItem('auth_token');
-      localStorage.removeItem('refresh_token');
+      localStorage.removeItem('token');
+      localStorage.removeItem('userDetails');
     }
   }
 }
 
-// Export singleton instance
 export const apiClient = new ApiClient();
