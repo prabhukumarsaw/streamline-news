@@ -5,7 +5,6 @@
  */
 
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { getApiHeaders, getMultipartHeaders } from './api-config';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://live.framework-futuristic.com/api';
 

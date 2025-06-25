@@ -13,7 +13,8 @@ interface PopularArticlesProps {
 }
 
 export function PopularArticles({ articles }: PopularArticlesProps) {
-  const popularArticles = articles.slice(0, 3);
+  const safeArticles = Array.isArray(articles) ? articles : [];
+  const popularArticles = safeArticles.slice(0, 3);
 
   return (
     <Card>

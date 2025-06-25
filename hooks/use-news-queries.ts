@@ -5,7 +5,7 @@
  */
 
 import { useQuery, useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { enhancedNewsService, NewsListParams } from '@/services/enhanced-news-service';
+import { newsService, NewsListParams, getNewsByCategory } from '@/services/news-service';
 
 // Query keys
 export const newsQueryKeys = {
@@ -23,7 +23,7 @@ export const newsQueryKeys = {
 export const useActiveNewsList = (params: NewsListParams = {}) => {
   return useQuery({
     queryKey: newsQueryKeys.list(params),
-    queryFn: () => enhancedNewsService.getActiveNewsList(params),
+    queryFn: () => newsService.getTrendingArticles(),
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: 3,
   });
@@ -33,7 +33,7 @@ export const useActiveNewsList = (params: NewsListParams = {}) => {
 export const useNewsArticle = (params: { id?: string; slug?: string }) => {
   return useQuery({
     queryKey: newsQueryKeys.detail(params.id || params.slug || ''),
-    queryFn: () => enhancedNewsService.getNewsArticle(params),
+    queryFn: () => newsService.getNewsArticle(params),
     enabled: !!(params.id || params.slug),
     staleTime: 10 * 60 * 1000, // 10 minutes
   });
@@ -43,7 +43,7 @@ export const useNewsArticle = (params: { id?: string; slug?: string }) => {
 export const useCategories = () => {
   return useQuery({
     queryKey: newsQueryKeys.categories(),
-    queryFn: () => enhancedNewsService.getCategories(),
+    queryFn: () => newsService.getCategories(),
     staleTime: 30 * 60 * 1000, // 30 minutes
   });
 };
@@ -52,7 +52,7 @@ export const useCategories = () => {
 export const useTags = (params: { tag_name?: string } = {}) => {
   return useQuery({
     queryKey: [...newsQueryKeys.tags(), params],
-    queryFn: () => enhancedNewsService.getTags(params),
+    queryFn: () => newsService.getTags(params),
     staleTime: 30 * 60 * 1000, // 30 minutes
   });
 };
@@ -61,17 +61,17 @@ export const useTags = (params: { tag_name?: string } = {}) => {
 export const useSearchNews = (query: string, params: NewsListParams = {}) => {
   return useQuery({
     queryKey: newsQueryKeys.search(query),
-    queryFn: () => enhancedNewsService.searchNews(query, params),
+    queryFn: () => newsService.searchNews(query, params),
     enabled: query.length > 2,
     staleTime: 2 * 60 * 1000, // 2 minutes
   });
 };
 
 // Get news by category
-export const useNewsByCategory = (categoryId: string, params: NewsListParams = {}) => {
+export const useNewsByCategory = (categoryId: number, params: NewsListParams = {}) => {
   return useQuery({
     queryKey: [...newsQueryKeys.list(params), 'category', categoryId],
-    queryFn: () => enhancedNewsService.getNewsByCategory(categoryId, params),
+    queryFn: () => newsService.getNewsByCategory(categoryId, params),
     enabled: !!categoryId,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
@@ -81,16 +81,17 @@ export const useNewsByCategory = (categoryId: string, params: NewsListParams = {
 export const useInfiniteNewsList = (params: NewsListParams = {}) => {
   return useInfiniteQuery({
     queryKey: [...newsQueryKeys.lists(), 'infinite', params],
-    queryFn: ({ pageParam = 1 }) => 
-      enhancedNewsService.getActiveNewsList({ ...params, page: pageParam }),
-    getNextPageParam: (lastPage) => {
-      if (lastPage.current_page && lastPage.last_page) {
-        return lastPage.current_page < lastPage.last_page 
-          ? lastPage.current_page + 1 
+    queryFn: ({ pageParam = 1 }: { pageParam?: number }) =>
+      newsService.getActiveNewsList({ ...params, page: pageParam }),
+    getNextPageParam: (lastPage: any) => {
+      if (lastPage && typeof lastPage.current_page === 'number' && typeof lastPage.last_page === 'number') {
+        return lastPage.current_page < lastPage.last_page
+          ? lastPage.current_page + 1
           : undefined;
       }
       return undefined;
     },
+    initialPageParam: 1,
     staleTime: 5 * 60 * 1000,
   });
 };
@@ -102,7 +103,7 @@ export const usePrefetchNewsArticle = () => {
   return (params: { id?: string; slug?: string }) => {
     queryClient.prefetchQuery({
       queryKey: newsQueryKeys.detail(params.id || params.slug || ''),
-      queryFn: () => enhancedNewsService.getNewsArticle(params),
+      queryFn: () => newsService.getNewsArticle(params),
       staleTime: 10 * 60 * 1000,
     });
   };

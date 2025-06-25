@@ -9,9 +9,9 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { getTrendingNews } from '@/services/news-service';
 import { formatRelativeTime } from '@/lib/utils';
-import { newsData } from '@/data/news-data';
 import { HeroCarousel } from './hero-carousel';
 import { FeatureMain } from './feature-main';
+import { Article } from '@/types/news';
 
 export function Hero() {
   const { data: trendingNews = [] } = useQuery({
@@ -19,10 +19,10 @@ export function Hero() {
     queryFn: getTrendingNews,
   });
 
+  console.log('Trending News:', trendingNews);
+
   // Use API data if available, otherwise fallback to mock data
-  const articles =
-    trendingNews.length > 0 ? trendingNews : newsData.articles.slice(0, 4);
-  const sideArticles = articles.slice(1, 4);
+  const sideArticles = trendingNews.slice(1, 4);
 
   // console.log('Trending News:', trendingNews);
 
@@ -36,13 +36,6 @@ export function Hero() {
           </h2>
 
           {sideArticles.map((article) => {
-            const articleAuthor = newsData.authors.find(
-              (a) => a.id === article.authorId
-            );
-            const articleCategory = newsData.categories.find(
-              (c) => c.id === article.categoryId
-            );
-
             return (
               <Card
                 key={article.id}
@@ -59,9 +52,9 @@ export function Hero() {
                   </div>
                   <CardContent className="p-4 flex-1">
                     <div className="flex items-center gap-2 mb-2">
-                      <Badge variant="secondary" className="text-xs">
+                      {/* <Badge variant="secondary" className="text-xs">
                         {articleCategory?.name}
-                      </Badge>
+                      </Badge> */}
                       {article.trending && (
                         <Badge className="text-xs bg-red-500">Live</Badge>
                       )}
@@ -72,7 +65,7 @@ export function Hero() {
                       </h3>
                     </Link>
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <span>{articleAuthor?.name}</span>
+                      {/* <span>{articleAuthor?.name}</span> */}
                       <Separator orientation="vertical" className="h-3" />
                       <span>{formatRelativeTime(article.publishedAt)}</span>
                     </div>

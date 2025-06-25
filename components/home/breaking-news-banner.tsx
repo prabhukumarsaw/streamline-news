@@ -7,8 +7,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X, Volume2, VolumeX } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+
 import { Badge } from '@/components/ui/badge';
 import { useActiveNewsList } from '@/hooks/use-news-queries';
 import Link from 'next/link';
@@ -21,22 +20,21 @@ interface BreakingNewsItem {
 }
 
 export function BreakingNewsBanner() {
-  const [isVisible, setIsVisible] = useState(true);
-  const [isMuted, setIsMuted] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const { data: newsResponse } = useActiveNewsList({ 
+  const { data: newsResponse } = useActiveNewsList({
     per_page: 5,
     sort_by: 'created_at',
-    sort_order: 'desc'
+    sort_order: 'desc',
   });
 
-  const breakingNews: BreakingNewsItem[] = newsResponse?.data?.slice(0, 3).map((item: any) => ({
-    id: item.id,
-    title: item.title || item.headline,
-    slug: item.slug,
-    urgent: item.is_urgent || false,
-  })) || [];
+  const breakingNews: BreakingNewsItem[] =
+    newsResponse?.slice(0, 3).map((item: any) => ({
+      id: item.id,
+      title: item.title || item.headline,
+      slug: item.slug,
+      urgent: item.is_urgent || false,
+    })) || [];
 
   useEffect(() => {
     if (breakingNews.length > 1) {
@@ -48,8 +46,6 @@ export function BreakingNewsBanner() {
     }
   }, [breakingNews.length]);
 
-  if (!isVisible || breakingNews.length === 0) return null;
-
   return (
     <div className="bg-red-600 text-white relative overflow-hidden">
       <div className="container mx-auto px-4">
@@ -57,18 +53,8 @@ export function BreakingNewsBanner() {
           {/* Breaking News Label */}
           <div className="flex items-center space-x-2 flex-shrink-0">
             <Badge className="bg-white text-red-600 font-bold px-3 py-1 text-sm">
-              BREAKING
+              BREAKING NEWS
             </Badge>
-            <div className="hidden sm:flex items-center space-x-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsMuted(!isMuted)}
-                className="text-white hover:bg-red-700 h-8 w-8 p-0"
-              >
-                {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-              </Button>
-            </div>
           </div>
 
           {/* News Content */}
@@ -83,7 +69,7 @@ export function BreakingNewsBanner() {
                       : 'opacity-0 translate-y-full'
                   }`}
                 >
-                  <Link 
+                  <Link
                     href={`/news/${news.slug}`}
                     className="text-sm font-medium hover:underline truncate"
                   >
@@ -106,16 +92,6 @@ export function BreakingNewsBanner() {
               />
             ))}
           </div>
-
-          {/* Close Button */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsVisible(false)}
-            className="text-white hover:bg-red-700 h-8 w-8 p-0 flex-shrink-0"
-          >
-            <X className="h-4 w-4" />
-          </Button>
         </div>
       </div>
 

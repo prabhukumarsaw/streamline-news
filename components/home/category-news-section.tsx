@@ -24,38 +24,41 @@ interface CategoryNewsSectionProps {
   defaultCategory?: string;
 }
 
-export function CategoryNewsSection({ 
-  title = "News by Category", 
+export function CategoryNewsSection({
+  title = 'News by Category',
   showTabs = true,
-  defaultCategory 
+  defaultCategory,
 }: CategoryNewsSectionProps) {
   const { data: categoriesResponse } = useCategories();
-  const categories = categoriesResponse?.data || [];
-  
+  const categories = categoriesResponse || [];
+
   const [selectedCategory, setSelectedCategory] = useState(
     defaultCategory || categories[0]?.id || ''
   );
 
-  const { data: newsResponse, isLoading } = useNewsByCategory(selectedCategory, {
-    per_page: 8
+  const { data: newsResponse, isLoading } = useNewsByCategory(4, {
+    per_page: 8,
   });
 
-  const categoryNews = newsResponse?.data?.map((item: any) => 
-    enhancedNewsService.transformArticle(item)
-  ) || [];
+  const categoryNews = newsResponse;
 
   if (categories.length === 0) return null;
 
   const renderNewsGrid = (articles: any[]) => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {articles.map((article, index) => (
-        <Card key={article.id} className={`overflow-hidden group hover:shadow-lg transition-all duration-300 ${
-          index === 0 ? 'md:col-span-2 md:row-span-2' : ''
-        }`}>
-          <div className={`relative ${index === 0 ? 'aspect-video' : 'aspect-square'}`}>
+        <Card
+          key={article.id}
+          className={`overflow-hidden group hover:shadow-lg transition-all duration-300 ${
+            index === 0 ? 'md:col-span-2 md:row-span-2' : ''
+          }`}
+        >
+          <div
+            className={`relative ${index === 0 ? 'aspect-video' : 'aspect-square'}`}
+          >
             <Image
-              src={article.image}
-              alt={article.title}
+              src={article.file_name || '/placeholder.png'}
+              alt={article.story_title}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-300"
             />
@@ -68,32 +71,35 @@ export function CategoryNewsSection({
           <CardContent className={`p-4 ${index === 0 ? 'p-6' : ''}`}>
             <div className="flex items-center gap-2 mb-2">
               <Badge variant="secondary" className="text-xs">
-                {categories.find(cat => cat.id === selectedCategory)?.name || 'News'}
+                {categories.find((cat) => cat.id === selectedCategory)?.name ||
+                  'News'}
               </Badge>
               <div className="flex items-center gap-1 text-xs text-muted-foreground">
                 <Clock className="h-3 w-3" />
                 {formatRelativeTime(article.publishedAt)}
               </div>
             </div>
-            
+
             <Link href={`/news/${article.slug}`}>
-              <h3 className={`font-semibold leading-tight mb-2 group-hover:text-primary transition-colors line-clamp-2 ${
-                index === 0 ? 'text-lg' : 'text-sm'
-              }`}>
-                {article.title}
+              <h3
+                className={`font-semibold leading-tight mb-2 group-hover:text-primary transition-colors line-clamp-2 ${
+                  index === 0 ? 'text-lg' : 'text-sm'
+                }`}
+              >
+                {article.story_title}
               </h3>
             </Link>
-            
+
             {index === 0 && (
               <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
                 {article.excerpt}
               </p>
             )}
-            
+
             <div className="flex items-center justify-between text-xs">
               <div className="flex items-center gap-1">
                 <Eye className="h-3 w-3" />
-                <span>{article.views.toLocaleString()}</span>
+                {/* <span>{article.views.toLocaleString()}</span> */}
               </div>
               <span>{article.readTime} min read</span>
             </div>
@@ -113,7 +119,11 @@ export function CategoryNewsSection({
         <Tabs value={selectedCategory} onValueChange={setSelectedCategory}>
           <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 lg:grid-cols-6 mb-8">
             {categories.slice(0, 6).map((category) => (
-              <TabsTrigger key={category.id} value={category.id} className="text-sm">
+              <TabsTrigger
+                key={category.id}
+                value={category.id}
+                className="text-sm"
+              >
                 {category.name}
               </TabsTrigger>
             ))}
@@ -124,7 +134,10 @@ export function CategoryNewsSection({
               {isLoading ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   {[...Array(8)].map((_, i) => (
-                    <div key={i} className="h-64 bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse" />
+                    <div
+                      key={i}
+                      className="h-64 bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse"
+                    />
                   ))}
                 </div>
               ) : (
@@ -153,7 +166,9 @@ export function CategoryNewsSection({
     <section className="py-8">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold">{title}</h2>
-        <Link href={`/category/${categories.find(cat => cat.id === selectedCategory)?.slug}`}>
+        <Link
+          href={`/category/${categories.find((cat) => cat.id === selectedCategory)?.category_id}`}
+        >
           <Button variant="outline">View All</Button>
         </Link>
       </div>
@@ -161,7 +176,10 @@ export function CategoryNewsSection({
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[...Array(8)].map((_, i) => (
-            <div key={i} className="h-64 bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse" />
+            <div
+              key={i}
+              className="h-64 bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse"
+            />
           ))}
         </div>
       ) : (
