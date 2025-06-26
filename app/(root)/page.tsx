@@ -2,11 +2,12 @@ import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { generateMetadata } from '@/lib/metadata';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
-import { Hero } from '@/components/home/hero';
 import { Sidebar } from '@/components/layout/sidebar';
+
 // Enhanced Home Page Components
 import { BreakingNewsBanner } from '@/components/home/breaking-news-banner';
-import { FeaturedHeroSection } from '@/components/home/featured-hero-section';
+import { EnhancedHeroSection } from '@/components/home/enhanced-hero-section';
+import { CarouselNewsSection } from '@/components/home/carousel-news-section';
 import { CategoryNewsSection } from '@/components/home/category-news-section';
 import { TrendingSidebar } from '@/components/home/trending-sidebar';
 import { NewsFlash } from '@/components/news/news-flash';
@@ -29,41 +30,59 @@ export const metadata: Metadata = generateMetadata({
 export default function HomePage() {
   return (
     <>
+      {/* Breaking News Banner */}
       <Suspense fallback={<div className="h-12 bg-gray-200 animate-pulse" />}>
         <BreakingNewsBanner />
       </Suspense>
+      
+      {/* Hot Words */}
       <HotWords />
 
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 py-8">
           {/* Main Content */}
           <div className="lg:col-span-3 space-y-12">
+            {/* Enhanced Hero Section */}
             <Suspense fallback={<LoadingSpinner />}>
-              <Hero />
+              <EnhancedHeroSection />
             </Suspense>
 
-            {/* Category News Sections */}
+            {/* Carousel News Sections */}
             <Suspense fallback={<LoadingSpinner />}>
-              <CategoryNewsSection
-                title="Politics"
-                showTabs={false}
+              <CarouselNewsSection
+                title="Latest Politics"
                 categoryId={4}
               />
             </Suspense>
 
             <Suspense fallback={<LoadingSpinner />}>
-              <CategoryNewsSection
-                title="Business"
-                showTabs={false}
+              <CarouselNewsSection
+                title="Business & Economy"
                 categoryId={5}
               />
             </Suspense>
 
             <Suspense fallback={<LoadingSpinner />}>
-              <CategoryNewsSection
-                title="Technology"
-                showTabs={false}
+              <CarouselNewsSection
+                title="Technology & Innovation"
                 categoryId={7}
+              />
+            </Suspense>
+
+            {/* Category News Sections */}
+            <Suspense fallback={<LoadingSpinner />}>
+              <CategoryNewsSection
+                title="Sports"
+                showTabs={false}
+                categoryId={6}
+              />
+            </Suspense>
+
+            <Suspense fallback={<LoadingSpinner />}>
+              <CategoryNewsSection
+                title="Entertainment"
+                showTabs={false}
+                categoryId={8}
               />
             </Suspense>
 
@@ -76,11 +95,10 @@ export default function HomePage() {
             </Suspense>
           </div>
 
-          {/* Sidebar */}
+          {/* Enhanced Sidebar */}
           <div className="lg:col-span-1">
             <Suspense fallback={<LoadingSpinner />}>
-              {/* <TrendingSidebar /> */}
-              <Sidebar />
+              <TrendingSidebar />
             </Suspense>
           </div>
         </div>

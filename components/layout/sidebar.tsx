@@ -8,6 +8,8 @@ import { TimeWidget } from '@/components/widgets/time-widget';
 import { VisitorCountWidget } from '@/components/widgets/visitor-count-widget';
 import { TrendingTopics } from '@/components/widgets/trending-topics';
 import { PopularArticles } from '@/components/widgets/popular-articles';
+import { ReportNewsWidget } from '@/components/widgets/report-news-widget';
+import { NewsletterWidget } from '@/components/widgets/newsletter-widget';
 import { getTrendingNews } from '@/services/news-service';
 
 export function Sidebar() {
@@ -18,6 +20,12 @@ export function Sidebar() {
 
   return (
     <div className="space-y-6">
+      {/* Report News Widget */}
+      <ReportNewsWidget />
+
+      {/* Newsletter Widget */}
+      <NewsletterWidget />
+
       {/* Widgets */}
       <div className="grid grid-cols-1 gap-4">
         <WeatherWidget />

@@ -39,7 +39,6 @@ export interface Article {
   views: number;
 }
 
-
 export interface Author {
   id: string;
   name: string;
@@ -69,46 +68,46 @@ export interface NewsletterSubscription {
 }
 
 export interface Category {
-  id: number
-  category: string 
-  cat_in_english: string
-  serial: number
-  created_date: string
-  renderer_code: string
+  id: number;
+  category: string;
+  cat_in_english: string;
+  serial: number;
+  created_date: string;
+  renderer_code: string;
 }
 
 export interface CategoryResponse {
-  status: boolean
-  data: Category[]
+  status: boolean;
+  data: Category[];
 }
 
 export interface NavItem {
-  name: string
-  href: string
-  icon?: React.ReactNode
-  description?: string
-  badge?: string
-  items?: SubNavItem[]
+  name: string;
+  href: string;
+  icon?: React.ReactNode;
+  description?: string;
+  badge?: string;
+  items?: SubNavItem[];
   featured?: {
-    title: string
-    description: string
-    href: string
-  }
+    title: string;
+    description: string;
+    href: string;
+  };
 }
 
 export interface SubNavItem {
-  name: string
-  href: string
-  description: string
-  badge?: string
+  name: string;
+  href: string;
+  description: string;
+  badge?: string;
 }
 
 export interface BreakingNewsItem {
-  id: number
-  title: string
-  href: string
-  time: Date
-  isUrgent?: boolean
+  id: number;
+  title: string;
+  href: string;
+  time: Date;
+  isUrgent?: boolean;
 }
 
 export interface Tag {
