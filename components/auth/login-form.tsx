@@ -1,6 +1,6 @@
 /**
  * Enhanced Login Form Component
- * Created by: Prabhu
+ * Created by:  postgres
  * Description: Production-ready login form with proper error handling
  */
 
@@ -15,7 +15,13 @@ import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { authService } from '@/services/auth-service';
 import { toast } from 'sonner';
 
@@ -42,10 +48,10 @@ export function LoginForm() {
 
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
-    
+
     try {
       const response = await authService.login(data);
-      
+
       if (response.status) {
         toast.success('Login successful!');
         router.push('/dashboard');
@@ -65,12 +71,14 @@ export function LoginForm() {
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold text-center">Sign In</CardTitle>
+        <CardTitle className="text-2xl font-bold text-center">
+          Sign In
+        </CardTitle>
         <CardDescription className="text-center">
           Enter your credentials to access your account
         </CardDescription>
       </CardHeader>
-      
+
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
@@ -104,7 +112,11 @@ export function LoginForm() {
                 className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                {showPassword ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
               </Button>
             </div>
             {errors.password && (
@@ -130,10 +142,16 @@ export function LoginForm() {
           </Button>
 
           <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
-            <p className="text-sm text-blue-700 font-medium mb-2">Demo Credentials:</p>
+            <p className="text-sm text-blue-700 font-medium mb-2">
+              Demo Credentials:
+            </p>
             <div className="text-xs text-blue-600 space-y-1">
-              <p><strong>Email:</strong> admin@example.com</p>
-              <p><strong>Password:</strong> password123</p>
+              <p>
+                <strong>Email:</strong> admin@example.com
+              </p>
+              <p>
+                <strong>Password:</strong> password123
+              </p>
             </div>
           </div>
         </form>

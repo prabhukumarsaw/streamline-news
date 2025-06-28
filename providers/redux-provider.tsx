@@ -1,6 +1,6 @@
 /**
  * Redux Provider Component
- * Created by: Prabhu
+ * Created by:  postgres
  * Description: Redux store provider with persistence and SSR support
  */
 
@@ -38,12 +38,12 @@ export function ReduxProvider({ children }: ReduxProviderProps) {
 
   return (
     <Provider store={store}>
-      <PersistGate 
+      <PersistGate
         loading={
           <div className="flex items-center justify-center min-h-screen">
             <LoadingSpinner />
           </div>
-        } 
+        }
         persistor={persistor}
       >
         {children}

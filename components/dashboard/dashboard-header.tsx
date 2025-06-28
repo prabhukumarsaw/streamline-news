@@ -1,6 +1,6 @@
 /**
  * Dashboard Header Component
- * Created by: Prabhu
+ * Created by:  postgres
  * Description: Dashboard header with user menu and notifications
  */
 
@@ -33,10 +33,10 @@ export function DashboardHeader() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { user, logout } = useAuth();
-  const { notifications } = useAppSelector(state => state.ui);
+  const { notifications } = useAppSelector((state) => state.ui);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  const unreadNotifications = notifications.filter(n => !n.read).length;
+  const unreadNotifications = notifications.filter((n) => !n.read).length;
 
   /**
    * Handle user logout
@@ -75,7 +75,7 @@ export function DashboardHeader() {
         >
           <Menu className="h-5 w-5" />
         </Button>
-        
+
         <div>
           <h1 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
             Dashboard
@@ -89,8 +89,8 @@ export function DashboardHeader() {
         <Button variant="ghost" size="sm" className="relative">
           <Bell className="h-5 w-5" />
           {unreadNotifications > 0 && (
-            <Badge 
-              variant="destructive" 
+            <Badge
+              variant="destructive"
               className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center text-xs"
             >
               {unreadNotifications}
@@ -110,7 +110,7 @@ export function DashboardHeader() {
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
-          
+
           <DropdownMenuContent className="w-56" align="end" forceMount>
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
@@ -123,22 +123,24 @@ export function DashboardHeader() {
                 </p>
               </div>
             </DropdownMenuLabel>
-            
+
             <DropdownMenuSeparator />
-            
+
             <DropdownMenuItem onClick={() => router.push('/dashboard/profile')}>
               <User className="mr-2 h-4 w-4" />
               <span>Profile</span>
             </DropdownMenuItem>
-            
-            <DropdownMenuItem onClick={() => router.push('/dashboard/settings')}>
+
+            <DropdownMenuItem
+              onClick={() => router.push('/dashboard/settings')}
+            >
               <Settings className="mr-2 h-4 w-4" />
               <span>Settings</span>
             </DropdownMenuItem>
-            
+
             <DropdownMenuSeparator />
-            
-            <DropdownMenuItem 
+
+            <DropdownMenuItem
               onClick={handleLogout}
               disabled={isLoggingOut}
               className="text-red-600 dark:text-red-400"

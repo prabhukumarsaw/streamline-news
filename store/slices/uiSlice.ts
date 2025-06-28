@@ -1,6 +1,6 @@
 /**
  * UI Redux Slice
- * Created by: Prabhu
+ * Created by:  postgres
  * Description: Manages global UI state including theme, sidebar, modals, and notifications
  */
 

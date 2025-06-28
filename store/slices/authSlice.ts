@@ -1,6 +1,6 @@
 /**
  * Authentication Redux Slice
- * Created by: Prabhu
+ * Created by:  postgres
  * Description: Manages user authentication state, login/logout, and user session
  */
 

@@ -1,3 +1,69 @@
+# Streamline News
+
+## Modernized Architecture (2024)
+
+This project now uses **Next.js server actions** for all backend logic, with **Drizzle ORM** and **PostgreSQL** for data storage. All previous Laravel API dependencies have been removed.
+
+---
+
+## Folder Structure
+
+- `/app` - Next.js app directory (routes, pages, layouts)
+- `/components` - UI and reusable components
+- `/actions` - Next.js server actions (all data mutations/fetching)
+- `/db` - Drizzle ORM schema, migrations, and config
+- `/services` - Business logic (to be migrated to server actions)
+- `/lib` - Utilities and helpers
+- `/types` - TypeScript types
+
+---
+
+## Migration Note
+
+>  postgres: All API logic is being migrated from Laravel to Next.js server actions and Drizzle ORM. See `/actions` and `/db` for new logic.
+
+---
+
+## Setup
+
+1. Install dependencies:
+   ```bash
+   yarn install
+   # or
+   npm install
+   ```
+2. Set up your PostgreSQL database and configure environment variables:
+   - `DATABASE_URL=postgres://user:password@localhost:5432/yourdb`
+3. Run Drizzle migrations:
+   ```bash
+   npx drizzle-kit push:pg
+   ```
+4. Start the development server:
+   ```bash
+   yarn dev
+   # or
+   npm run dev
+   ```
+
+---
+
+## Server Actions & Drizzle ORM
+
+- All data fetching and mutations are handled via server actions in `/actions`.
+- Database schema and queries are managed with Drizzle ORM in `/db`.
+
+---
+
+## Clean Architecture
+
+- UI, business logic, and data access are separated for maintainability.
+- No external API dependencies; all logic is handled in-app.
+
+---
+
+## Contributors
+-  postgres (migration lead)
+
 # Advanced News Platform
 
 A cutting-edge, production-ready news platform built with Next.js 15+, TypeScript, and modern web technologies. Features comprehensive SEO optimization, multilingual support, advanced analytics, and enterprise-grade performance.

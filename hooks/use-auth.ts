@@ -1,6 +1,6 @@
 /**
  * Authentication Hook
- * Created by: Prabhu
+ * Created by:  postgres
  * Description: Custom hook for authentication state and actions
  */
 

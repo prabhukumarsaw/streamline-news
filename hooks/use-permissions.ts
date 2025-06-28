@@ -1,6 +1,6 @@
 /**
  * Permissions Hook
- * Created by: Prabhu
+ * Created by:  postgres
  * Description: Custom hook for permission management and access control
  */
 

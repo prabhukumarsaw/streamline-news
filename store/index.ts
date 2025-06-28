@@ -1,6 +1,6 @@
 /**
  * Redux Store Configuration
- * Created by: Prabhu
+ * Created by:  postgres
  * Description: Main store configuration with Redux Toolkit, persistence, and middleware setup
  */
 

@@ -1,6 +1,6 @@
 /**
  * News React Query Hooks
- * Created by: Prabhu
+ * Created by:  postgres
  * Description: Custom hooks for news data fetching with React Query
  */
 
@@ -23,7 +23,7 @@ export const newsQueryKeys = {
 export const useActiveNewsList = (params: NewsListParams = {}) => {
   return useQuery({
     queryKey: newsQueryKeys.list(params),
-    queryFn: () => newsService.getTrendingArticles(),
+    queryFn: () => newsService.getActiveNewsList({ per_page: 15, ...params }),
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: 3,
   });

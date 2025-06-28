@@ -1,6 +1,6 @@
 /**
  * Permissions Redux Slice
- * Created by: Prabhu
+ * Created by:  postgres
  * Description: Manages user permissions, roles, and access control throughout the application
  */
 

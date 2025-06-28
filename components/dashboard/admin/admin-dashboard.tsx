@@ -1,6 +1,6 @@
 /**
  * Admin Dashboard Component
- * Created by: Prabhu
+ * Created by:  postgres
  * Description: Comprehensive admin dashboard with real backend integration
  */
 
@@ -8,12 +8,28 @@
 
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Users, FileText, Eye, Activity, TrendingUp, AlertCircle, BarChart3, Calendar } from 'lucide-react';
+import {
+  Users,
+  FileText,
+  Eye,
+  Activity,
+  TrendingUp,
+  AlertCircle,
+  BarChart3,
+  Calendar,
+} from 'lucide-react';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
-import { apiClient } from '@/lib/api-client';
+
+//  postgres: This component previously used Laravel API. Refactor to use Next.js server actions and Drizzle ORM.
 
 interface DashboardStats {
   totalUsers: number;
@@ -39,7 +55,11 @@ export function AdminDashboard() {
   });
 
   // Fetch dashboard statistics
-  const { data: stats, isLoading: statsLoading, error: statsError } = useQuery({
+  const {
+    data: stats,
+    isLoading: statsLoading,
+    error: statsError,
+  } = useQuery({
     queryKey: ['admin-dashboard-stats', dateRange],
     queryFn: async (): Promise<DashboardStats> => {
       try {
@@ -48,7 +68,7 @@ export function AdminDashboard() {
           start_date: dateRange.startDate,
           end_date: dateRange.endDate,
         });
-        
+
         if (response.status && response.data) {
           return {
             totalUsers: response.data.total_users || 0,
@@ -62,7 +82,7 @@ export function AdminDashboard() {
       } catch (error) {
         console.warn('Failed to fetch real stats, using mock data:', error);
       }
-      
+
       // Fallback to mock data
       return {
         totalUsers: 1247,
@@ -84,7 +104,7 @@ export function AdminDashboard() {
         const response = await apiClient.post('/v1/dashboard/recent-activity', {
           limit: 10,
         });
-        
+
         if (response.status && response.data) {
           return response.data.map((item: any) => ({
             id: item.id,
@@ -97,7 +117,7 @@ export function AdminDashboard() {
       } catch (error) {
         console.warn('Failed to fetch activities, using mock data:', error);
       }
-      
+
       // Fallback to mock data
       return [
         {
@@ -144,8 +164,10 @@ export function AdminDashboard() {
   const formatTimeAgo = (timestamp: string) => {
     const now = new Date();
     const time = new Date(timestamp);
-    const diffInMinutes = Math.floor((now.getTime() - time.getTime()) / (1000 * 60));
-    
+    const diffInMinutes = Math.floor(
+      (now.getTime() - time.getTime()) / (1000 * 60)
+    );
+
     if (diffInMinutes < 1) return 'Just now';
     if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
     if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h ago`;
@@ -167,11 +189,13 @@ export function AdminDashboard() {
           <CardContent className="flex items-center justify-center p-8">
             <div className="text-center">
               <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Error Loading Dashboard</h3>
-              <p className="text-muted-foreground mb-4">Failed to load dashboard data</p>
-              <Button onClick={() => window.location.reload()}>
-                Retry
-              </Button>
+              <h3 className="text-lg font-semibold mb-2">
+                Error Loading Dashboard
+              </h3>
+              <p className="text-muted-foreground mb-4">
+                Failed to load dashboard data
+              </p>
+              <Button onClick={() => window.location.reload()}>Retry</Button>
             </div>
           </CardContent>
         </Card>
@@ -191,9 +215,7 @@ export function AdminDashboard() {
         </div>
         <div className="flex items-center gap-2">
           <Calendar className="h-4 w-4" />
-          <span className="text-sm text-muted-foreground">
-            Last 30 days
-          </span>
+          <span className="text-sm text-muted-foreground">Last 30 days</span>
         </div>
       </div>
 
@@ -205,7 +227,9 @@ export function AdminDashboard() {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats?.totalUsers.toLocaleString()}</div>
+            <div className="text-2xl font-bold">
+              {stats?.totalUsers.toLocaleString()}
+            </div>
             <p className="text-xs text-muted-foreground">
               <TrendingUp className="inline h-3 w-3 mr-1" />
               +12% from last month
@@ -215,11 +239,15 @@ export function AdminDashboard() {
 
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Articles</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Total Articles
+            </CardTitle>
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats?.totalArticles.toLocaleString()}</div>
+            <div className="text-2xl font-bold">
+              {stats?.totalArticles.toLocaleString()}
+            </div>
             <p className="text-xs text-muted-foreground">
               <TrendingUp className="inline h-3 w-3 mr-1" />
               +8% from last month
@@ -233,7 +261,9 @@ export function AdminDashboard() {
             <Eye className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats?.totalViews.toLocaleString()}</div>
+            <div className="text-2xl font-bold">
+              {stats?.totalViews.toLocaleString()}
+            </div>
             <p className="text-xs text-muted-foreground">
               <TrendingUp className="inline h-3 w-3 mr-1" />
               +23% from last month
@@ -248,35 +278,33 @@ export function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats?.activeUsers}</div>
-            <p className="text-xs text-muted-foreground">
-              Online now
-            </p>
+            <p className="text-xs text-muted-foreground">Online now</p>
           </CardContent>
         </Card>
 
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Published Today</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Published Today
+            </CardTitle>
             <BarChart3 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats?.publishedToday}</div>
-            <p className="text-xs text-muted-foreground">
-              Articles published
-            </p>
+            <p className="text-xs text-muted-foreground">Articles published</p>
           </CardContent>
         </Card>
 
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Reviews</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Pending Reviews
+            </CardTitle>
             <AlertCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats?.pendingReviews}</div>
-            <p className="text-xs text-muted-foreground">
-              Awaiting review
-            </p>
+            <p className="text-xs text-muted-foreground">Awaiting review</p>
           </CardContent>
         </Card>
       </div>
@@ -286,7 +314,9 @@ export function AdminDashboard() {
         <Card>
           <CardHeader>
             <CardTitle>Recent Activity</CardTitle>
-            <CardDescription>Latest system activities and user actions</CardDescription>
+            <CardDescription>
+              Latest system activities and user actions
+            </CardDescription>
           </CardHeader>
           <CardContent>
             {activitiesLoading ? (
@@ -296,11 +326,17 @@ export function AdminDashboard() {
             ) : (
               <div className="space-y-4">
                 {activities.map((activity) => (
-                  <div key={activity.id} className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                    <div className="text-lg">{getActivityIcon(activity.type)}</div>
+                  <div
+                    key={activity.id}
+                    className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                  >
+                    <div className="text-lg">
+                      {getActivityIcon(activity.type)}
+                    </div>
                     <div className="flex-1 space-y-1">
                       <p className="text-sm font-medium">
-                        <span className="font-semibold">{activity.user}</span> {activity.action}
+                        <span className="font-semibold">{activity.user}</span>{' '}
+                        {activity.action}
                       </p>
                       <p className="text-xs text-muted-foreground">
                         {formatTimeAgo(activity.timestamp)}
@@ -327,15 +363,24 @@ export function AdminDashboard() {
                 <FileText className="h-6 w-6 mb-2" />
                 Manage Articles
               </Button>
-              <Button variant="outline" className="h-20 flex flex-col items-center justify-center">
+              <Button
+                variant="outline"
+                className="h-20 flex flex-col items-center justify-center"
+              >
                 <Users className="h-6 w-6 mb-2" />
                 Manage Users
               </Button>
-              <Button variant="outline" className="h-20 flex flex-col items-center justify-center">
+              <Button
+                variant="outline"
+                className="h-20 flex flex-col items-center justify-center"
+              >
                 <BarChart3 className="h-6 w-6 mb-2" />
                 View Analytics
               </Button>
-              <Button variant="outline" className="h-20 flex flex-col items-center justify-center">
+              <Button
+                variant="outline"
+                className="h-20 flex flex-col items-center justify-center"
+              >
                 <Activity className="h-6 w-6 mb-2" />
                 System Health
               </Button>

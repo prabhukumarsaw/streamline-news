@@ -1,6 +1,6 @@
 /**
  * Trending Sidebar Component
- * Created by: Prabhu
+ * Created by:  postgres
  * Description: Sidebar with trending articles and widgets
  */
 
@@ -17,19 +17,21 @@ import { enhancedNewsService } from '@/services/enhanced-news-service';
 import { formatRelativeTime } from '@/lib/utils';
 
 export function TrendingSidebar() {
-  const { data: trendingResponse } = useActiveNewsList({ 
+  const { data: trendingResponse } = useActiveNewsList({
     per_page: 10,
     sort_by: 'views',
-    sort_order: 'desc'
+    sort_order: 'desc',
   });
 
-  const trendingArticles = trendingResponse?.data?.slice(0, 5).map((item: any) => 
-    enhancedNewsService.transformArticle(item)
-  ) || [];
+  const trendingArticles =
+    trendingResponse?.data
+      ?.slice(0, 5)
+      .map((item: any) => enhancedNewsService.transformArticle(item)) || [];
 
-  const popularArticles = trendingResponse?.data?.slice(5, 10).map((item: any) => 
-    enhancedNewsService.transformArticle(item)
-  ) || [];
+  const popularArticles =
+    trendingResponse?.data
+      ?.slice(5, 10)
+      .map((item: any) => enhancedNewsService.transformArticle(item)) || [];
 
   return (
     <div className="space-y-6">
@@ -127,7 +129,9 @@ export function TrendingSidebar() {
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="flex justify-between items-center">
-            <span className="text-sm text-muted-foreground">Articles Published</span>
+            <span className="text-sm text-muted-foreground">
+              Articles Published
+            </span>
             <span className="font-semibold">24</span>
           </div>
           <div className="flex justify-between items-center">

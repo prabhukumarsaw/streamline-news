@@ -1,43 +1,35 @@
-export interface BackendArticle {
-  section_id?: number;
-  is_visible?: number;
-  section_container_name?: string;
-  section_renderer_code?: string;
-  story_id?: number;
-  author_id?: number;
-  publication_date?: string;
-  publication_time?: string;
-  story_title?: string;
-  story_body?: string;
-  story_author?: number;
-  category_id?: number;
-  feature_image_id?: number;
-  custom_url?: string;
-  file_name?: string;
-  media_type?: string;
-  author_name?: string;
-  category?: string;
-  cat_in_english?: string;
-  sequence?: number;
-  ct_tag_name?: string;
-}
-
 export interface Article {
-  id: string;
-  title: string;
-  slug: string;
-  excerpt: string;
-  content: string;
-  image: string;
-  categoryId: string;
-  authorId: string;
-  publishedAt: string;
-  trending: boolean;
-  featured: boolean;
-  tags: string[];
-  readTime: number;
-  views: number;
-}
+    id: string;
+    title: string;
+    slug: string;
+    excerpt: string | null;
+    contentBody: string | null;
+    contentType: "article" | "breaking_news" | "feature" | "opinion" | "photo_gallery" | "video" | null;
+    status: "draft" | "review" | "approved" | "published" | "archived" | "rejected";
+    featuredImageId?: string | null;
+    authorId: string | null;
+    editorId?: string | null;
+    categoryId: number | null;
+    viewCount: number;
+    likeCount: number;
+    commentCount: number;
+    shareCount: number;
+    readingTime: number;
+    isFeatured: boolean;
+    isBreaking: boolean;
+    isPremium: boolean;
+    scheduledAt?: string | null;
+    publishedAt: string | null;
+    expiresAt?: string | null;
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    metaKeywords?: string | null;
+    canonicalUrl?: string | null;
+    customFields?: Record<string, any> | null;
+    seoScore?: number;
+    createdAt: string | null;
+    updatedAt: string | null;
+  };
 
 export interface Author {
   id: string;
@@ -150,3 +142,36 @@ export interface NewsListParams {
   sort_order?: 'asc' | 'desc';
   trending?: boolean;
 }
+
+export const createSafeArticle = (article: Partial<Article>): Article => ({
+  id: article.id || 'unknown',
+  title: article.title || 'Untitled Article',
+  slug: article.slug || 'untitled',
+  excerpt: article.excerpt || null,
+  contentBody: article.contentBody || null,
+  contentType: article.contentType || null,
+  status: article.status || 'draft',
+  featuredImageId: article.featuredImageId || null,
+  authorId: article.authorId || null,
+  editorId: article.editorId || null,
+  categoryId: article.categoryId || null,
+  viewCount: article.viewCount || 0,
+  likeCount: article.likeCount || 0,
+  commentCount: article.commentCount || 0,
+  shareCount: article.shareCount || 0,
+  readingTime: article.readingTime || 1,
+  isFeatured: article.isFeatured || false,
+  isBreaking: article.isBreaking || false,
+  isPremium: article.isPremium || false,
+  scheduledAt: article.scheduledAt || null,
+  publishedAt: article.publishedAt || new Date().toISOString(),
+  expiresAt: article.expiresAt || null,
+  metaTitle: article.metaTitle || null,
+  metaDescription: article.metaDescription || null,
+  metaKeywords: article.metaKeywords || null,
+  canonicalUrl: article.canonicalUrl || null,
+  customFields: article.customFields || null,
+  seoScore: article.seoScore || undefined,
+  createdAt: article.createdAt || null,
+  updatedAt: article.updatedAt || null,
+});

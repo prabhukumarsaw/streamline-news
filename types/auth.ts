@@ -1,6 +1,6 @@
 /**
  * Authentication and Authorization Types
- * Created by: Prabhu
+ * Created by:  postgres
  * Description: Comprehensive type definitions for user authentication, roles, and permissions
  */
 
@@ -136,3 +136,24 @@ export interface SystemHealth {
   cpuUsage: number;
   diskUsage: number;
 }
+
+//  postgres: Types for authentication and user
+export type AuthUser = {
+  id: string;
+  email: string;
+  display_name: string;
+  role: string;
+  permissions: string[];
+  avatar_url?: string;
+};
+
+export type LoginResponse = {
+  success: boolean;
+  data?: {
+    user: AuthUser;
+    access_token: string;
+    refresh_token: string;
+    expires_in: number;
+  };
+  message: string;
+};

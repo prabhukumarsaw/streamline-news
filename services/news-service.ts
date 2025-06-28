@@ -1,12 +1,10 @@
 /**
  * Enhanced News Service
- * Created by: Prabhu
+ * Created by:  postgres
  * Description: Production-ready service with consistent methods and centralized export
  */
 
-import { apiClient } from '@/lib/api-client';
-import { ApiList } from '@/lib/api-config';
-import { Article, Category, BackendArticle } from '@/types/news';
+//  postgres: This service previously used Laravel API. Refactor to use Next.js server actions and Drizzle ORM.
 
 export interface NewsResponse {
   status: boolean;
@@ -29,44 +27,34 @@ export interface NewsListParams {
 
 class NewsService {
   /**
-   * Get paginated active news list
+   * Get active news list with enhanced error handling
    */
- /**
- * Get paginated active news list
- */
-async getActiveNewsList(params: NewsListParams = {}): Promise<{
-  articles: Article[];
-  currentPage: number;
-  totalPages: number;
-  totalItems: number;
-  itemsPerPage: number;
-}> {
-  try {
-    const response = await apiClient.post(ApiList.api_getActiveNewsList, params);
-    const data = response?.data?.data || {};
+  async getActiveNewsList(params: NewsListParams = {}) {
+    try {
+      const response = await apiClient.post(ApiList.api_getActiveNewsList, params);
+      
+      if (response.status && response.data?.data) {
+        const articles = Array.isArray(response.data.data) 
+          ? response.data.data.map((item: BackendArticle) => this.transformArticle(item))
+          : [];
 
-    const articles: Article[] = Array.isArray(data.data)
-      ? data.data.map(this.transformArticle)
-      : [];
+        return {
+          articles,
+          pagination: {
+            currentPage: response.data.current_page || 1,
+            totalPages: response.data.last_page || 1,
+            totalItems: response.data.total || articles.length,
+            itemsPerPage: response.data.per_page || 10,
+          }
+        };
+      }
 
-    return {
-      articles,
-      currentPage: data.current_page ?? 1,
-      totalPages: data.last_page ?? 1,
-      totalItems: data.total ?? articles.length,
-      itemsPerPage: data.per_page ?? 10,
-    };
-  } catch (error) {
-    console.error('❌ Failed to fetch active news list:', error);
-    return {
-      articles: [],
-      currentPage: 1,
-      totalPages: 1,
-      totalItems: 0,
-      itemsPerPage: 10,
-    };
+      return { articles: [], pagination: { currentPage: 1, totalPages: 1, totalItems: 0, itemsPerPage: 10 } };
+    } catch (error) {
+      console.error('❌ Failed to fetch active news list:', error);
+      return { articles: [], pagination: { currentPage: 1, totalPages: 1, totalItems: 0, itemsPerPage: 10 } };
+    }
   }
-}
 
 
     /**

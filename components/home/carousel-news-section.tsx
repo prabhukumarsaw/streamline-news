@@ -1,6 +1,6 @@
 /**
  * Carousel News Section Component
- * Created by: Prabhu
+ * Created by:  postgres
  * Description: Horizontal scrolling news carousel with categories
  */
 
@@ -22,10 +22,10 @@ interface CarouselNewsSectionProps {
   showViewAll?: boolean;
 }
 
-export function CarouselNewsSection({ 
-  title, 
-  categoryId, 
-  showViewAll = true 
+export function CarouselNewsSection({
+  title,
+  categoryId,
+  showViewAll = true,
 }: CarouselNewsSectionProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -44,13 +44,14 @@ export function CarouselNewsSection({
     if (!scrollRef.current) return;
 
     const scrollAmount = 320; // Width of one card plus gap
-    const newScrollLeft = direction === 'left' 
-      ? scrollRef.current.scrollLeft - scrollAmount
-      : scrollRef.current.scrollLeft + scrollAmount;
+    const newScrollLeft =
+      direction === 'left'
+        ? scrollRef.current.scrollLeft - scrollAmount
+        : scrollRef.current.scrollLeft + scrollAmount;
 
     scrollRef.current.scrollTo({
       left: newScrollLeft,
-      behavior: 'smooth'
+      behavior: 'smooth',
     });
 
     // Update scroll button states
@@ -58,8 +59,8 @@ export function CarouselNewsSection({
       if (scrollRef.current) {
         setCanScrollLeft(scrollRef.current.scrollLeft > 0);
         setCanScrollRight(
-          scrollRef.current.scrollLeft < 
-          scrollRef.current.scrollWidth - scrollRef.current.clientWidth
+          scrollRef.current.scrollLeft <
+            scrollRef.current.scrollWidth - scrollRef.current.clientWidth
         );
       }
     }, 300);
@@ -67,11 +68,11 @@ export function CarouselNewsSection({
 
   const handleScroll = () => {
     if (!scrollRef.current) return;
-    
+
     setCanScrollLeft(scrollRef.current.scrollLeft > 0);
     setCanScrollRight(
-      scrollRef.current.scrollLeft < 
-      scrollRef.current.scrollWidth - scrollRef.current.clientWidth
+      scrollRef.current.scrollLeft <
+        scrollRef.current.scrollWidth - scrollRef.current.clientWidth
     );
   };
 
@@ -84,7 +85,10 @@ export function CarouselNewsSection({
         </div>
         <div className="flex gap-4 overflow-hidden">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="w-80 h-64 bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse flex-shrink-0" />
+            <div
+              key={i}
+              className="w-80 h-64 bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse flex-shrink-0"
+            />
           ))}
         </div>
       </section>
@@ -120,7 +124,7 @@ export function CarouselNewsSection({
             </Button>
           </div>
         </div>
-        
+
         {showViewAll && (
           <Link href={categoryId ? `/category/${categoryId}` : '/news'}>
             <Button variant="outline">View All</Button>
@@ -137,8 +141,8 @@ export function CarouselNewsSection({
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {articles.map((article, index) => (
-            <Card 
-              key={article.id} 
+            <Card
+              key={article.id}
               className="w-80 flex-shrink-0 overflow-hidden group hover:shadow-lg transition-all duration-300"
             >
               <div className="relative aspect-video">
@@ -155,7 +159,7 @@ export function CarouselNewsSection({
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
-              
+
               <CardContent className="p-4">
                 <div className="flex items-center gap-2 mb-3">
                   <Badge variant="secondary" className="text-xs">
@@ -166,17 +170,17 @@ export function CarouselNewsSection({
                     {formatRelativeTime(article.publishedAt)}
                   </div>
                 </div>
-                
+
                 <Link href={`/news/${article.slug}`}>
                   <h3 className="font-semibold leading-tight mb-2 group-hover:text-primary transition-colors line-clamp-2">
                     {article.title}
                   </h3>
                 </Link>
-                
+
                 <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
                   {article.excerpt}
                 </p>
-                
+
                 <div className="flex items-center justify-between text-xs text-muted-foreground">
                   <div className="flex items-center gap-1">
                     <Eye className="h-3 w-3" />

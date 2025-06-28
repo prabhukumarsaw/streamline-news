@@ -1,6 +1,6 @@
 /**
  * Dashboard Sidebar Component
- * Created by: Prabhu
+ * Created by:  postgres
  * Description: Role-based navigation sidebar for dashboard
  */
 
@@ -11,17 +11,17 @@ import { usePathname } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
 import { usePermissions } from '@/hooks/use-permissions';
 import { cn } from '@/lib/utils';
-import { 
-  LayoutDashboard, 
-  FileText, 
-  Users, 
-  Settings, 
-  BarChart3, 
+import {
+  LayoutDashboard,
+  FileText,
+  Users,
+  Settings,
+  BarChart3,
   Shield,
   MessageSquare,
   Calendar,
   Tag,
-  Image
+  Image,
 } from 'lucide-react';
 
 interface NavigationItem {
@@ -128,7 +128,9 @@ export function DashboardSidebar() {
         <div className="flex items-center h-16 px-6 border-b border-gray-200 dark:border-gray-700">
           <Link href="/dashboard" className="flex items-center space-x-2">
             <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm">N</span>
+              <span className="text-primary-foreground font-bold text-sm">
+                N
+              </span>
             </div>
             <span className="font-bold text-xl">NewsHub</span>
           </Link>

@@ -1,6 +1,6 @@
 /**
  * Category News Section Component
- * Created by: Prabhu
+ * Created by:  postgres
  * Description: News section organized by categories
  */
 

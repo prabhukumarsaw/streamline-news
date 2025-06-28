@@ -1,6 +1,6 @@
 /**
  * News Redux Slice
- * Created by: Prabhu
+ * Created by:  postgres
  * Description: Manages news articles, categories, and content-related state
  */
 

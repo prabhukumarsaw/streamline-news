@@ -12,6 +12,8 @@ import { CategoryNewsSection } from '@/components/home/category-news-section';
 import { TrendingSidebar } from '@/components/home/trending-sidebar';
 import { NewsFlash } from '@/components/news/news-flash';
 import { HotWords } from '@/components/news/hot-words';
+import { getNews } from '@/actions/news/getNews';
+import { Article } from '@/types/news';
 
 export const metadata: Metadata = generateMetadata({
   title: 'The Japan News - Breaking News & Latest Updates',
@@ -27,71 +29,77 @@ export const metadata: Metadata = generateMetadata({
   ],
 });
 
-export default function HomePage() {
+export default async function HomePage() {
+  // Fetch from database with error handling
+  let articles: Article[] = [];
+  try {
+    const raw = await getNews(15);
+    articles = raw.map((a: any) => ({
+      ...a,
+      status: a.status ?? 'draft',
+    })) as Article[];
+  } catch (error) {
+    console.error('Error in HomePage:', error);
+    // Fallback to mock data if database fails
+  }
+
   return (
     <>
       {/* Breaking News Banner */}
       <Suspense fallback={<div className="h-12 bg-gray-200 animate-pulse" />}>
-        <BreakingNewsBanner />
+        {/* <BreakingNewsBanner /> */}
       </Suspense>
-      
+
       {/* Hot Words */}
       <HotWords />
 
       <div className="container mx-auto px-4">
+        {/* Enhanced Hero Section */}
+        <Suspense fallback={<LoadingSpinner />}>
+          <EnhancedHeroSection articles={articles} />
+        </Suspense>
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 py-8">
           {/* Main Content */}
           <div className="lg:col-span-3 space-y-12">
-            {/* Enhanced Hero Section */}
-            <Suspense fallback={<LoadingSpinner />}>
-              <EnhancedHeroSection />
-            </Suspense>
-
             {/* Carousel News Sections */}
             <Suspense fallback={<LoadingSpinner />}>
-              <CarouselNewsSection
-                title="Latest Politics"
-                categoryId={4}
-              />
+              {/* <CarouselNewsSection title="Latest Politics" categoryId={4} /> */}
             </Suspense>
 
             <Suspense fallback={<LoadingSpinner />}>
-              <CarouselNewsSection
-                title="Business & Economy"
-                categoryId={5}
-              />
+              {/* <CarouselNewsSection title="Business & Economy" categoryId={5} /> */}
             </Suspense>
 
             <Suspense fallback={<LoadingSpinner />}>
-              <CarouselNewsSection
+              {/* <CarouselNewsSection
                 title="Technology & Innovation"
                 categoryId={7}
-              />
+              /> */}
             </Suspense>
 
             {/* Category News Sections */}
             <Suspense fallback={<LoadingSpinner />}>
-              <CategoryNewsSection
+              {/* <CategoryNewsSection
                 title="Sports"
                 showTabs={false}
                 categoryId={6}
-              />
+              /> */}
             </Suspense>
 
             <Suspense fallback={<LoadingSpinner />}>
-              <CategoryNewsSection
+              {/* <CategoryNewsSection
                 title="Entertainment"
                 showTabs={false}
                 categoryId={8}
-              />
+              /> */}
             </Suspense>
 
             {/* Tabbed Category Section */}
             <Suspense fallback={<LoadingSpinner />}>
-              <CategoryNewsSection
+              {/* <CategoryNewsSection
                 title="Explore by Category"
                 showTabs={true}
-              />
+              /> */}
             </Suspense>
           </div>
 

@@ -1,6 +1,6 @@
 /**
  * Newsletter Widget Component
- * Created by: Prabhu
+ * Created by:  postgres
  * Description: Newsletter subscription widget with categories
  */
 
@@ -26,12 +26,15 @@ const categories = [
 
 export function NewsletterWidget() {
   const [email, setEmail] = useState('');
-  const [selectedCategories, setSelectedCategories] = useState<string[]>(['breaking', 'daily']);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([
+    'breaking',
+    'daily',
+  ]);
   const [isSubscribed, setIsSubscribed] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!email.trim()) {
       toast.error('Please enter your email address');
       return;
@@ -50,9 +53,9 @@ export function NewsletterWidget() {
 
   const handleCategoryChange = (categoryId: string, checked: boolean) => {
     if (checked) {
-      setSelectedCategories(prev => [...prev, categoryId]);
+      setSelectedCategories((prev) => [...prev, categoryId]);
     } else {
-      setSelectedCategories(prev => prev.filter(id => id !== categoryId));
+      setSelectedCategories((prev) => prev.filter((id) => id !== categoryId));
     }
   };
 
@@ -69,8 +72,8 @@ export function NewsletterWidget() {
               You'll receive our newsletter based on your preferences.
             </p>
           </div>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={() => setIsSubscribed(false)}
             className="text-sm"
           >
@@ -116,7 +119,7 @@ export function NewsletterWidget() {
                   <Checkbox
                     id={category.id}
                     checked={selectedCategories.includes(category.id)}
-                    onCheckedChange={(checked) => 
+                    onCheckedChange={(checked) =>
                       handleCategoryChange(category.id, checked as boolean)
                     }
                   />

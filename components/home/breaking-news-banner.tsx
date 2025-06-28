@@ -1,6 +1,6 @@
 /**
  * Breaking News Banner Component
- * Created by: Prabhu
+ * Created by:  postgres
  * Description: Scrolling breaking news banner similar to Japan News
  */
 
@@ -29,7 +29,7 @@ export function BreakingNewsBanner() {
   });
 
   const breakingNews: BreakingNewsItem[] =
-    newsResponse?.slice(0, 3).map((item: any) => ({
+    newsResponse?.articles.slice(0, 3).map((item: any) => ({
       id: item.id,
       title: item.title || item.headline,
       slug: item.slug,

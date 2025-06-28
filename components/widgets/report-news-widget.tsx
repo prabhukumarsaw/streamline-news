@@ -1,6 +1,6 @@
 /**
  * Report News Widget Component
- * Created by: Prabhu
+ * Created by:  postgres
  * Description: Widget for users to report news or submit tips
  */
 
@@ -13,7 +13,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { toast } from 'sonner';
 
 export function ReportNewsWidget() {
@@ -24,20 +30,20 @@ export function ReportNewsWidget() {
     description: '',
     location: '',
     contact: '',
-    email: ''
+    email: '',
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.type || !formData.title || !formData.description) {
       toast.error('Please fill in all required fields');
       return;
     }
 
     // Here you would typically send the data to your backend
-    toast.success('News tip submitted successfully! We\'ll review it shortly.');
-    
+    toast.success("News tip submitted successfully! We'll review it shortly.");
+
     // Reset form
     setFormData({
       type: '',
@@ -45,20 +51,20 @@ export function ReportNewsWidget() {
       description: '',
       location: '',
       contact: '',
-      email: ''
+      email: '',
     });
     setIsOpen(false);
   };
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   if (!isOpen) {
     return (
       <Card className="sticky top-4">
         <CardContent className="p-4">
-          <Button 
+          <Button
             onClick={() => setIsOpen(true)}
             className="w-full bg-red-600 hover:bg-red-700 text-white"
           >
@@ -85,7 +91,10 @@ export function ReportNewsWidget() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <Label htmlFor="type">Type of News *</Label>
-            <Select value={formData.type} onValueChange={(value) => handleInputChange('type', value)}>
+            <Select
+              value={formData.type}
+              onValueChange={(value) => handleInputChange('type', value)}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select news type" />
               </SelectTrigger>
@@ -160,9 +169,9 @@ export function ReportNewsWidget() {
               <Send className="mr-2 h-4 w-4" />
               Submit
             </Button>
-            <Button 
-              type="button" 
-              variant="outline" 
+            <Button
+              type="button"
+              variant="outline"
               onClick={() => setIsOpen(false)}
               className="flex-1"
             >

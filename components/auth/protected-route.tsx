@@ -1,6 +1,6 @@
 /**
  * Protected Route Component
- * Created by: Prabhu
+ * Created by:  postgres
  * Description: Route protection with authentication and permission checks
  */
 
@@ -32,7 +32,13 @@ export function ProtectedRoute({
   fallbackUrl = '/auth/login',
 }: ProtectedRouteProps) {
   const router = useRouter();
-  const { isAuthenticated, isLoading: authLoading, user, hasPermission, hasRole } = useAuth();
+  const {
+    isAuthenticated,
+    isLoading: authLoading,
+    user,
+    hasPermission,
+    hasRole,
+  } = useAuth();
   const { can, isLoading: permissionsLoading } = usePermissions();
 
   useEffect(() => {
@@ -53,8 +59,8 @@ export function ProtectedRoute({
 
     // Check permission requirements
     if (requiredPermissions.length > 0) {
-      const hasAllPermissions = requiredPermissions.every(({ resource, action }) =>
-        can(action, resource)
+      const hasAllPermissions = requiredPermissions.every(
+        ({ resource, action }) => can(action, resource)
       );
 
       if (!hasAllPermissions) {
@@ -96,8 +102,8 @@ export function ProtectedRoute({
 
   // Don't render if permission requirements not met
   if (requiredPermissions.length > 0) {
-    const hasAllPermissions = requiredPermissions.every(({ resource, action }) =>
-      can(action, resource)
+    const hasAllPermissions = requiredPermissions.every(
+      ({ resource, action }) => can(action, resource)
     );
 
     if (!hasAllPermissions) {
