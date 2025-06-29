@@ -8,6 +8,13 @@
       "when": 1751050199338,
       "tag": "0000_melted_blue_blade",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1751181549469,
+      "tag": "0001_cultured_silverclaw",
+      "breakpoints": true
     }
   ]
 }

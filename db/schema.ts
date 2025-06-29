@@ -79,6 +79,9 @@ export const users = pgTable(
     timezone: varchar("timezone", { length: 50 }).default("UTC"),
     language: varchar("language", { length: 10 }).default("en"),
     preferences: jsonb("preferences").default("{}"),
+    mfaEnabled: boolean("mfa_enabled").default(false),
+    mfaSecret: varchar("mfa_secret", { length: 255 }),
+    backupCodes: jsonb("backup_codes").default("[]"),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
   },
@@ -104,6 +107,54 @@ export const userRoles = pgTable(
     uniqueUserRole: uniqueIndex("unique_user_role").on(table.userId, table.roleId),
   }),
 )
+
+// Sessions table for NextAuth
+export const accounts = pgTable("accounts", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
+  type: varchar("type", { length: 255 }).notNull(),
+  provider: varchar("provider", { length: 255 }).notNull(),
+  providerAccountId: varchar("provider_account_id", { length: 255 }).notNull(),
+  refreshToken: text("refresh_token"),
+  accessToken: text("access_token"),
+  expiresAt: integer("expires_at"),
+  tokenType: varchar("token_type", { length: 255 }),
+  scope: varchar("scope", { length: 255 }),
+  idToken: text("id_token"),
+  sessionState: varchar("session_state", { length: 255 }),
+}, (table) => ({
+  providerProviderAccountIdIdx: uniqueIndex("provider_provider_account_id_idx").on(table.provider, table.providerAccountId),
+}))
+
+export const sessions = pgTable("sessions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  sessionToken: varchar("session_token", { length: 255 }).unique().notNull(),
+  userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
+  expires: timestamp("expires", { withTimezone: true }).notNull(),
+}, (table) => ({
+  sessionTokenIdx: index("session_token_idx").on(table.sessionToken),
+}))
+
+export const verificationTokens = pgTable("verification_tokens", {
+  identifier: varchar("identifier", { length: 255 }).notNull(),
+  token: varchar("token", { length: 255 }).notNull(),
+  expires: timestamp("expires", { withTimezone: true }).notNull(),
+}, (table) => ({
+  identifierTokenIdx: uniqueIndex("identifier_token_idx").on(table.identifier, table.token),
+}))
+
+
+// Refresh tokens table
+export const refreshTokens = pgTable("refresh_tokens", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  token: varchar("token", { length: 500 }).unique().notNull(),
+  userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  isRevoked: boolean("is_revoked").default(false),
+}, (table) => ({
+  tokenIdx: index("refresh_token_idx").on(table.token),
+}))
 
 // Categories table
 export const categories: any = pgTable(
@@ -298,26 +349,59 @@ export const notifications = pgTable(
 
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
-  userRoles: many(userRoles),
+  userRoles: many(userRoles, { relationName: 'userRoleUser' }),
   content: many(content),
+  accounts: many(accounts),
+  sessions: many(sessions),
+  refreshTokens: many(refreshTokens),
   comments: many(comments),
   notifications: many(notifications),
+  assignedRoles: many(userRoles, { relationName: 'userRoleAssignedBy' }),
 }))
 
 export const rolesRelations = relations(roles, ({ many }) => ({
-  userRoles: many(userRoles),
+  userRoles: many(userRoles, { relationName: 'userRoleRole' }),
 }))
 
 export const userRolesRelations = relations(userRoles, ({ one }) => ({
   user: one(users, {
     fields: [userRoles.userId],
     references: [users.id],
+    relationName: 'userRoleUser',
   }),
   role: one(roles, {
     fields: [userRoles.roleId],
     references: [roles.id],
+    relationName: 'userRoleRole',
+  }),
+  assignedByUser: one(users, {
+    fields: [userRoles.assignedBy],
+    references: [users.id],
+    relationName: 'userRoleAssignedBy',
   }),
 }))
+
+
+export const accountsRelations = relations(accounts, ({ one }) => ({
+  user: one(users, {
+    fields: [accounts.userId],
+    references: [users.id],
+  }),
+}));
+
+export const sessionsRelations = relations(sessions, ({ one }) => ({
+  user: one(users, {
+    fields: [sessions.userId],
+    references: [users.id],
+  }),
+}));
+
+export const refreshTokensRelations = relations(refreshTokens, ({ one }) => ({
+  user: one(users, {
+    fields: [refreshTokens.userId],
+    references: [users.id],
+  }),
+}));
 
 export const categoriesRelations = relations(categories, ({ one, many }) => ({
   parent: one(categories, {

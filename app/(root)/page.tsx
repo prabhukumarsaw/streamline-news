@@ -12,7 +12,7 @@ import { CategoryNewsSection } from '@/components/home/category-news-section';
 import { TrendingSidebar } from '@/components/home/trending-sidebar';
 import { NewsFlash } from '@/components/news/news-flash';
 import { HotWords } from '@/components/news/hot-words';
-import { getNews } from '@/actions/news/getNews';
+import { getNews } from '@/server/news/getNews';
 import { Article } from '@/types/news';
 
 export const metadata: Metadata = generateMetadata({

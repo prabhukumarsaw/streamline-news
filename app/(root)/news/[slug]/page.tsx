@@ -111,7 +111,7 @@ function ArticleSkeleton() {
   );
 }
 
-export function AdvancedNewsDetail({
+export default function AdvancedNewsDetail({
   article,
   relatedArticles = [],
 }: AdvancedNewsDetailProps) {
